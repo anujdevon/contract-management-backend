@@ -7,9 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories("com.devon.contractmanagementsystem.*")
-@ComponentScan(basePackages = {"com.devon.contractmanagementsystem.*"})
-@EntityScan("com.devon.contractmanagementsystem.*")
+//@EnableJpaRepositories("com.devon.contractmanagementsystem.*")
+//@ComponentScan(basePackages = {"com.devon.contractmanagementsystem.*"})
+//@EntityScan("com.devon.contractmanagementsystem.*")
 public class ContractManagementSystemApplication {
 
 	public static void main(String[] args) {
