@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.devon.contractmanagementsystem.model.User;
+import com.devon.contractmanagementsystem.model.UserLoginRequest;
 // import com.devon.contractmanagementsystem.repository.UserRepository;
 import com.devon.contractmanagementsystem.service.UserService;
 
@@ -22,8 +23,9 @@ public class UserController {
      }
 
     @PostMapping("/login")
-    public User login(@RequestBody User user) {
+    public User login(@RequestBody UserLoginRequest loginRequest) {
         // Retrieve user from the database based on email and password
-        return userService.login(user);
+        //return userService.login(user);
+        return userService.login(loginRequest.getEmailOrPhoneNumber(),loginRequest.getPassword());
     }
 }
