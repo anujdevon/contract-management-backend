@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.devon.contractmanagementsystem.model.FileDB;
-import com.devon.contractmanagementsystem.repository.FileDBRepository;
 @Service
 public class FileStorageService {
 
@@ -20,9 +18,9 @@ public class FileStorageService {
 
     public FileDB store(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        FileDB FileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+        FileDB fileDB = fileDBRepository.save(new FileDB(fileName, file.getContentType(), file.getBytes()));
 
-        return (com.devon.contractmanagementsystem.model.FileDB) fileDBRepository.save(FileDB);
+        return fileDB;
     }
 
     public FileDB getFile(String id) {
