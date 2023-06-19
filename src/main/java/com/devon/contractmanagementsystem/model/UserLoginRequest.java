@@ -2,23 +2,23 @@ package com.devon.contractmanagementsystem.model;
 
 
 public class UserLoginRequest {
-    private String emailOrPhoneNumber;
+    private String email;
     private String password;
     
     public UserLoginRequest() {
     }
     
-    public UserLoginRequest(String emailOrPhoneNumber, String password) {
-    this.emailOrPhoneNumber = emailOrPhoneNumber;
+    public UserLoginRequest(String email, String password) {
+    this.email = email;
     this.password = password;
     }
     
-    public String getEmailOrPhoneNumber() {
-    return emailOrPhoneNumber;
+    public String getEmail() {
+    return email;
     }
     
-    public void setEmailOrPhoneNumber(String emailOrPhoneNumber) {
-    this.emailOrPhoneNumber = emailOrPhoneNumber;
+    public void setEmail(String email) {
+    this.email = email;
     }
     
     public String getPassword() {

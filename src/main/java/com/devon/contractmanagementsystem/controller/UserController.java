@@ -26,6 +26,6 @@ public class UserController {
     public User login(@RequestBody UserLoginRequest loginRequest) {
         // Retrieve user from the database based on email and password
         //return userService.login(user);
-        return userService.login(loginRequest.getEmailOrPhoneNumber(),loginRequest.getPassword());
+        return userService.login(loginRequest.getEmail(),loginRequest.getPassword());
     }
 }

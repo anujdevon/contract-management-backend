@@ -40,8 +40,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User login(String emailOrPhoneNumber, String password) {
-        User user = userRepository.findByEmailOrPhoneNumber(emailOrPhoneNumber, emailOrPhoneNumber);
+    public User login(String email, String password) {
+        User user = userRepository.findByEmail(email);
 //        if (user != null && verifyPassword(password, user.getPassword())) {
            return user;
 //        }
