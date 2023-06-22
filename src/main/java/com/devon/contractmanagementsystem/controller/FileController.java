@@ -16,6 +16,10 @@ import com.devon.contractmanagementsystem.service.FileStorageService;
 import com.devon.contractmanagementsystem.message.ResponseFile;
 import com.devon.contractmanagementsystem.message.ResponseMessage;
 import com.devon.contractmanagementsystem.model.FileDB;
+import com.devon.contractmanagementsystem.model.User;
+import com.devon.contractmanagementsystem.model.UserFileMapping;
+import com.devon.contractmanagementsystem.repository.UserFileMappingRepository;
+import com.devon.contractmanagementsystem.repository.UserRepository;
 
 @RestController
 @CrossOrigin
@@ -24,14 +28,33 @@ public class FileController {
     @Autowired
     private FileStorageService storageService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserFileMappingRepository userFileMappingRepository;
+
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ResponseMessage> uploadFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userId") int userId
+    ) {
         String message = "";
         try {
-            FileDB f = storageService.store(file);
+            User user = userRepository.findById(userId);
+            if(user != null)
+            {
+                FileDB fileDB = storageService.store(file, user.getId());
+                FileDB saveFile = storageService.getFile(fileDB.getId());
+                UserFileMapping mapping = new UserFileMapping(user.getId(), fileDB.getId());
+                userFileMappingRepository.save(mapping);
+                message = "Uploaded the file successfully: ";
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+            }
+            else{
+                throw new IllegalArgumentException("Invalid user ID: "+userId);
+            }
 
-            message = "Uploaded the file successfully: " + file.getOriginalFilename();
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
         } catch (Exception e) {
             message = "Could not upload the file: " + file.getOriginalFilename() + "!";
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));

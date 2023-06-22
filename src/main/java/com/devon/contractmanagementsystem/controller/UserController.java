@@ -16,11 +16,11 @@ public class UserController {
     UserService userService;
 
 
-     @PostMapping("/signup")
-     public User signUp(@RequestBody User user) {
-         // Save user to the database
-         return userService.signUp(user);
-     }
+    @PostMapping("/signup")
+    public User signUp(@RequestBody User user) {
+        // Save user to the database
+        return userService.signUp(user);
+    }
 
     @PostMapping("/login")
     public User login(@RequestBody UserLoginRequest loginRequest) {

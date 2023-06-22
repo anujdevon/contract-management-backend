@@ -6,27 +6,6 @@ import org.springframework.stereotype.Service;
 import com.devon.contractmanagementsystem.model.User;
 import com.devon.contractmanagementsystem.repository.UserRepository;
 
-//import org.springframework.security.crypto.bcrypt.BCrypt;
-
-// @Service
-// public class UserService {
-//     @Autowired
-//         UserRepository userRepository;
-//     public User login(User user) {
-//         User resultUser = userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());
-//         //Retrieve user from the database based on email and password
-//         return resultUser;
-//         //return new User("anuj","abc");
-//     }
-//     public User signUp(User user)
-//     {
-//         return userRepository.save(user);
-//     }
-
-
-// }
-
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -67,13 +46,5 @@ public class UserService {
         }
     }
 
-//    private void hashPassword(User user) {
-//        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-//        user.setPassword(hashedPassword);
-//    }
-//
-//private boolean verifyPassword(String password, String hashedPassword)
-//{
-//    return BCrypt.checkpw(password, hashedPassword);
-//}
+
 }

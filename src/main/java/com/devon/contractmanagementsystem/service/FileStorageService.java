@@ -16,9 +16,10 @@ public class FileStorageService {
     @Autowired
     private FileDBRepository fileDBRepository;
 
-    public FileDB store(MultipartFile file) throws IOException {
+    public FileDB store(MultipartFile file, int userId) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        FileDB fileDB = fileDBRepository.save(new FileDB(fileName, file.getContentType(), file.getBytes()));
+        FileDB fileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+        fileDB = fileDBRepository.save(fileDB);
 
         return fileDB;
     }
@@ -30,4 +31,6 @@ public class FileStorageService {
     public Stream<FileDB> getAllFiles() {
         return fileDBRepository.findAll().stream();
     }
+
+
 }

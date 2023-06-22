@@ -4,28 +4,28 @@ package com.devon.contractmanagementsystem.model;
 public class UserLoginRequest {
     private String email;
     private String password;
-    
+
     public UserLoginRequest() {
     }
-    
+
     public UserLoginRequest(String email, String password) {
-    this.email = email;
-    this.password = password;
+        this.email = email;
+        this.password = password;
     }
-    
+
     public String getEmail() {
-    return email;
+        return email;
     }
-    
+
     public void setEmail(String email) {
-    this.email = email;
+        this.email = email;
     }
-    
+
     public String getPassword() {
-    return password;
+        return password;
     }
-    
+
     public void setPassword(String password) {
-    this.password = password;
+        this.password = password;
     }
-    }
+}

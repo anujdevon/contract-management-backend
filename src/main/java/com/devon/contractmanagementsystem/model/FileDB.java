@@ -1,21 +1,23 @@
 package com.devon.contractmanagementsystem.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "files")
 public class FileDB {
+
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Column(name = "id")
     private String id;
 
+
+//    @Column(name = "content_id",unique = true)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private int contentId;
     private String name;
 
     private String type;
@@ -25,6 +27,15 @@ public class FileDB {
 
     public FileDB() {
     }
+
+//    public FileDB(String name, String type, byte[] data, int contentId) {
+//
+//        this.name = name;
+//        this.type = type;
+//        this.data = data;
+//        this.contentId=contentId;
+//
+//    }
 
     public FileDB(String name, String type, byte[] data) {
         this.name = name;
@@ -36,6 +47,13 @@ public class FileDB {
         return id;
     }
 
+//    public int getContentId() {
+//        return contentId;
+//    }
+//
+//    public void setContentId(int contentId) {
+//        this.contentId = contentId;
+//    }
     public String getName() {
         return name;
     }
@@ -61,4 +79,3 @@ public class FileDB {
     }
 
 }
-
