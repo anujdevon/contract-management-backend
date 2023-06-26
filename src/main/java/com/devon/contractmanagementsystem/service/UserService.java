@@ -89,7 +89,7 @@ public class UserService {
     }
 
     public User login(String email, String password) {
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmailAndPassword(email,password);
 //        if (user != null && verifyPassword(password, user.getPassword())) {
         return user;
 //        }

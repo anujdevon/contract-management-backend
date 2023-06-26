@@ -34,7 +34,7 @@ public class FileController {
     @Autowired
     private UserFileMappingRepository userFileMappingRepository;
 
-    @PostMapping("/upload")
+    @PostMapping("/upload/{userId}")
     public ResponseEntity<ResponseMessage> uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam("userId") int userId
@@ -45,7 +45,7 @@ public class FileController {
             if(user != null)
             {
                 FileDB fileDB = storageService.store(file, user.getId());
-                FileDB saveFile = storageService.getFile(fileDB.getId());
+
                 UserFileMapping mapping = new UserFileMapping(user.getId(), fileDB.getId());
                 userFileMappingRepository.save(mapping);
                 message = "Uploaded the file successfully: ";
