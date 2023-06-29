@@ -37,10 +37,11 @@ public class FileController {
     @PostMapping("/upload/{userId}")
     public ResponseEntity<ResponseMessage> uploadFile(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("userId") int userId
+            @PathVariable("userId") int userId
     ) {
         String message = "";
         try {
+            System.out.println("userId: "+userId);
             User user = userRepository.findById(userId);
             if(user != null)
             {
