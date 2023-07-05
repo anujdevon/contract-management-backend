@@ -41,15 +41,22 @@ public class FileController {
     ) {
         String message = "";
         try {
-            System.out.println("userId: "+userId);
+//            System.out.println("userId: "+userId);
             User user = userRepository.findById(userId);
             if(user != null)
             {
-                FileDB fileDB = storageService.store(file, user.getId());
-
-                UserFileMapping mapping = new UserFileMapping(user.getId(), fileDB.getId());
-                userFileMappingRepository.save(mapping);
-                message = "Uploaded the file successfully: ";
+                FileDB existingFile = storageService.getFileByName(file.getOriginalFilename());
+                if(existingFile != null){
+                    existingFile.setData(file.getBytes());
+                    storageService.saveFile(existingFile);
+                    message="File updated successfully: "+ file.getOriginalFilename();
+                }
+                else {
+                    FileDB fileDB = storageService.store(file, user.getId());
+                    UserFileMapping mapping = new UserFileMapping(user.getId(), fileDB.getId());
+                    userFileMappingRepository.save(mapping);
+                    message = "Uploaded the file successfully: ";
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
             }
             else{
@@ -57,7 +64,7 @@ public class FileController {
             }
 
         } catch (Exception e) {
-            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+            message = "Could not upload/update the file: " + file.getOriginalFilename() + "!";
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
     }

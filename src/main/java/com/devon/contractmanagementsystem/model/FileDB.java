@@ -13,11 +13,7 @@ public class FileDB {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name = "id")
     private String id;
-
-
-//    @Column(name = "content_id",unique = true)
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private int contentId;
+    
     private String name;
 
     private String type;
@@ -27,15 +23,6 @@ public class FileDB {
 
     public FileDB() {
     }
-
-//    public FileDB(String name, String type, byte[] data, int contentId) {
-//
-//        this.name = name;
-//        this.type = type;
-//        this.data = data;
-//        this.contentId=contentId;
-//
-//    }
 
     public FileDB(String name, String type, byte[] data) {
         this.name = name;

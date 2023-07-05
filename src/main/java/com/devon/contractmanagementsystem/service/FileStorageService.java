@@ -1,6 +1,7 @@
 package com.devon.contractmanagementsystem.service;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.devon.contractmanagementsystem.model.FileDB;
@@ -18,7 +19,7 @@ public class FileStorageService {
 
     public FileDB store(MultipartFile file, int userId) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        System.out.println("userId: "+userId);
+//        System.out.println("userId: "+userId);
         FileDB fileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
         fileDB = fileDBRepository.save(fileDB);
 
@@ -29,9 +30,19 @@ public class FileStorageService {
         return (FileDB) fileDBRepository.findById(id).get();
     }
 
+    public FileDB getFileByName(String name){
+        Optional<FileDB> fileDBOptional = fileDBRepository.findByName(name);
+        return fileDBOptional.orElse(null);
+    }
+
     public Stream<FileDB> getAllFiles() {
         return fileDBRepository.findAll().stream();
     }
+
+    public void saveFile(FileDB fileDB){
+        fileDBRepository.save(fileDB);
+    }
+
 
 
 }
