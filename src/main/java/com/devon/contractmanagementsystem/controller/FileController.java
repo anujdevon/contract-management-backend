@@ -69,9 +69,9 @@ public class FileController {
         }
     }
 
-    @GetMapping("/files")
-    public ResponseEntity<List<ResponseFile>> getListFiles() {
-        List<ResponseFile> files = storageService.getAllFiles().map(dbFile -> {
+    @GetMapping("/file/{userId}")
+    public ResponseEntity<List<ResponseFile>> getUserFiles(@PathVariable int userId) {
+        List<ResponseFile> files = storageService.getUserFiles(userId).map(dbFile -> {
             String fileDownloadUri = ServletUriComponentsBuilder
                     .fromCurrentContextPath()
                     .path("/files/")

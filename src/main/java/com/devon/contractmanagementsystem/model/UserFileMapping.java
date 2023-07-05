@@ -9,15 +9,18 @@ public class UserFileMapping {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "userId")
-    private int user_id;
+    @Column(name = "user_id")
+    private int userId;
 
-    @Column(name = "contentId")
-    private String content_id;
+    @Column(name = "content_id")
+    private String contentId;
 
-    public UserFileMapping(int user_id, String content_id) {
-        this.user_id = user_id;
-        this.content_id = content_id;
+    public UserFileMapping(){
+
+    }
+    public UserFileMapping(int userId, String contentId) {
+        this.userId = userId;
+        this.contentId = contentId;
     }
 
     public int getId() {
@@ -29,18 +32,18 @@ public class UserFileMapping {
     }
 
     public int getUserId() {
-        return user_id;
+        return userId;
     }
 
-    public void setUserId(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getContentId() {
-        return content_id;
+        return contentId;
     }
 
-    public void setContentId(String content_id) {
-        this.content_id = content_id;
+    public void setContentId(String contentId) {
+        this.contentId = contentId;
     }
 }
