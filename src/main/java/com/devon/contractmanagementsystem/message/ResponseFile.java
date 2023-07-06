@@ -1,16 +1,23 @@
 package com.devon.contractmanagementsystem.message;
 
+import java.util.Date;
+
 public class ResponseFile {
     private String name;
     private String url;
     private String type;
     private long size;
 
-    public ResponseFile(String name, String url, String type, long size) {
+    private Date effectiveDate;
+    private Date expirationDate;
+
+    public ResponseFile(String name, String url, String type, long size, Date effectiveDate, Date expirationDate) {
         this.name = name;
         this.url = url;
         this.type = type;
         this.size = size;
+        this.effectiveDate=effectiveDate;
+        this.expirationDate=expirationDate;
     }
 
     public String getName() {
@@ -43,6 +50,20 @@ public class ResponseFile {
 
     public void setSize(long size) {
         this.size = size;
+    }
+
+    public Date getEffectiveDate(){
+        return effectiveDate;
+    }
+    public void setEffectiveDate(Date effectiveDate){
+        this.effectiveDate=effectiveDate;
+    }
+
+    public Date getExpirationDate(){
+        return expirationDate;
+    }
+    public void setExpirationDate(Date expirationDate){
+        this.expirationDate=expirationDate;
     }
 }
 

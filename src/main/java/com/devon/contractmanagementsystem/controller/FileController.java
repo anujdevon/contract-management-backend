@@ -1,9 +1,11 @@
 package com.devon.contractmanagementsystem.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,8 @@ public class FileController {
     @PostMapping("/upload/{userId}")
     public ResponseEntity<ResponseMessage> uploadFile(
             @RequestParam("file") MultipartFile file,
+            @RequestParam("effectiveDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date effectiveDate,
+            @RequestParam("expirationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date expirationDate,
             @PathVariable("userId") int userId
     ) {
         String message = "";
@@ -52,7 +56,7 @@ public class FileController {
                     message="File updated successfully: "+ file.getOriginalFilename();
                 }
                 else {
-                    FileDB fileDB = storageService.store(file, user.getId());
+                    FileDB fileDB = storageService.store(file, user.getId(),effectiveDate,expirationDate);
                     UserFileMapping mapping = new UserFileMapping(user.getId(), fileDB.getId());
                     userFileMappingRepository.save(mapping);
                     message = "Uploaded the file successfully: ";
@@ -82,7 +86,9 @@ public class FileController {
                     dbFile.getName(),
                     fileDownloadUri,
                     dbFile.getType(),
-                    dbFile.getData().length);
+                    dbFile.getData().length,
+                    dbFile.getEffectiveDate(),
+                    dbFile.getExpirationDate());
         }).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(files);

@@ -1,10 +1,13 @@
 package com.devon.contractmanagementsystem.service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import com.devon.contractmanagementsystem.model.FileDB;
 import com.devon.contractmanagementsystem.model.UserFileMapping;
@@ -24,10 +27,12 @@ public class FileStorageService {
     @Autowired
     private UserFileMappingRepository userFileMappingRepository;
 
-    public FileDB store(MultipartFile file, int userId) throws IOException {
+    public FileDB store(MultipartFile file, int userId, Date effectiveDate, Date expirationDate) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 //        System.out.println("userId: "+userId);
         FileDB fileDB = new FileDB(fileName, file.getContentType(), file.getBytes());
+        fileDB.setEffectiveDate((effectiveDate));
+        fileDB.setExpirationDate(expirationDate);
         fileDB = fileDBRepository.save(fileDB);
 
         return fileDB;

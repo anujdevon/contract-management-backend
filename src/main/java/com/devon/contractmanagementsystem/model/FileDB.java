@@ -4,6 +4,8 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "files")
 public class FileDB {
@@ -21,6 +23,12 @@ public class FileDB {
     @Lob
     private byte[] data;
 
+    @Column(name = "effective_date")
+    private Date effectiveDate;
+
+    @Column(name = "expiration_date")
+    private Date expirationDate;
+
     public FileDB() {
     }
 
@@ -34,13 +42,6 @@ public class FileDB {
         return id;
     }
 
-//    public int getContentId() {
-//        return contentId;
-//    }
-//
-//    public void setContentId(int contentId) {
-//        this.contentId = contentId;
-//    }
     public String getName() {
         return name;
     }
@@ -63,6 +64,20 @@ public class FileDB {
 
     public void setData(byte[] data) {
         this.data = data;
+    }
+
+    public Date getEffectiveDate(){
+        return effectiveDate;
+    }
+    public void setEffectiveDate(Date effectiveDate){
+        this.effectiveDate=effectiveDate;
+    }
+
+    public Date getExpirationDate(){
+        return expirationDate;
+    }
+    public void setExpirationDate(Date expirationDate){
+        this.expirationDate=expirationDate;
     }
 
 }
