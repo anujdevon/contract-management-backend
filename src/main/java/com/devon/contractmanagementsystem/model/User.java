@@ -1,9 +1,7 @@
 package com.devon.contractmanagementsystem.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
-//import jakarta.persistence.Table;
 
 
 @Entity

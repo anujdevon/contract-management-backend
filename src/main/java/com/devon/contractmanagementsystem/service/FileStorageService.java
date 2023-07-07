@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.Calendar;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -57,6 +58,14 @@ public class FileStorageService {
 
     public void saveFile(FileDB fileDB){
         fileDBRepository.save(fileDB);
+    }
+
+    public List<FileDB> getExpiringFiles(int days) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, days);
+
+        Date expirationDate = calendar.getTime();
+        return fileDBRepository.findByExpirationDateBefore(expirationDate);
     }
 
 

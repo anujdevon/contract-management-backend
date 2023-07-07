@@ -1,14 +1,21 @@
 package com.devon.contractmanagementsystem.controller;
 
 import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.mail.MessagingException;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
+import com.devon.contractmanagementsystem.service.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +42,10 @@ public class FileController {
 
     @Autowired
     private UserFileMappingRepository userFileMappingRepository;
+
+    @Autowired
+    private EmailSender emailSender;
+
 
     @PostMapping("/upload/{userId}")
     public ResponseEntity<ResponseMessage> uploadFile(
@@ -102,4 +113,39 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
                 .body(fileDB.getData());
     }
+
+    @Scheduled(cron = "0 */1 * * * *")
+    public void sendExpirationAlertEmails() {
+         List<FileDB> expiringFiles = storageService.getExpiringFiles(15); // Get files expiring in 15 days
+        String info = "";
+        for (FileDB file : expiringFiles) {
+            User user = getUserForFile(file);
+
+            if (user != null && user.getEmail() != null) {
+                String subject = "Contract Expiration Alert";
+                String body = "Dear " + user.getFirstName() + ",\n\n" +
+                        "The following contract is expiring in 15 days:\n" +
+                        "File: " + file.getName() + "\n" +
+                        "Effective Date: " + file.getEffectiveDate() + "\n" +
+                        "Expiration Date: " + file.getExpirationDate() + "\n\n" +
+                        "Please take appropriate action to renew or make necessary changes.\n\n" +
+                        "Best regards,\n" +
+                        "Your Contract Management System";
+                System.out.println("Alert email");
+                try {
+                    emailSender.sendEmail(user.getEmail(), subject, body);
+                } catch (MessagingException e) {
+                    info="Cannot send the mail";
+                }
+            }
+        }
+    }
+    private User getUserForFile(FileDB file){
+        UserFileMapping mapping = userFileMappingRepository.findByContentId(file.getId());
+        if(mapping != null){
+            return userRepository.findById(mapping.getUserId());
+        }
+        return null;
+    }
+
 }
