@@ -61,17 +61,26 @@ public class FileController {
             if(user != null)
             {
                 FileDB existingFile = storageService.getFileByName(file.getOriginalFilename());
-                if(existingFile != null){
-                    existingFile.setData(file.getBytes());
-                    storageService.saveFile(existingFile);
-                    message="File updated successfully: "+ file.getOriginalFilename();
-                }
-                else {
-                    FileDB fileDB = storageService.store(file, user.getId(),effectiveDate,expirationDate);
-                    UserFileMapping mapping = new UserFileMapping(user.getId(), fileDB.getId());
-                    userFileMappingRepository.save(mapping);
-                    message = "Uploaded the file successfully: ";
-                }
+                if(existingFile != null) {
+                    UserFileMapping userFileMapping = userFileMappingRepository.findByUserIdAndContentId(userId,existingFile.getId());
+                    if (userFileMapping != null) {
+                        existingFile.setData(file.getBytes());
+                        existingFile.setExpirationDate(expirationDate);
+                        existingFile.setEffectiveDate(effectiveDate);
+                        storageService.saveFile(existingFile);
+                        message = "File updated successfully: " + file.getOriginalFilename();
+                    } else {
+                        FileDB fileDB = storageService.store(file, user.getId(), effectiveDate, expirationDate);
+                        UserFileMapping mapping = new UserFileMapping(user.getId(), fileDB.getId());
+                        userFileMappingRepository.save(mapping);
+                        message = "Uploaded the file successfully: ";
+                    }
+                }else{
+                        FileDB fileDB = storageService.store(file, user.getId(), effectiveDate, expirationDate);
+                        UserFileMapping mapping = new UserFileMapping(user.getId(), fileDB.getId());
+                        userFileMappingRepository.save(mapping);
+                        message = "Uploaded the file successfully: ";
+                    }
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
             }
             else{
