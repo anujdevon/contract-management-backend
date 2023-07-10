@@ -1,5 +1,11 @@
 package com.devon.contractmanagementsystem.controller;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
@@ -8,12 +14,14 @@ import javax.mail.MessagingException;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletResponse;
 
 import com.devon.contractmanagementsystem.service.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -46,6 +54,24 @@ public class FileController {
     @Autowired
     private EmailSender emailSender;
 
+    private String generateCSVContent(List<ResponseFile> files) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append("Sr. no.,File name,Effective Date,Expiration Date,Status\n");
+        int count = 1;
+        for (ResponseFile file : files) {
+            String status = file.getExpirationDate() != null && file.getExpirationDate().compareTo(new Date()) >= 0 ? "Active" : "Inactive";
+            LocalDateTime effectiveDateTime = LocalDateTime.ofInstant(file.getEffectiveDate().toInstant(), ZoneOffset.UTC);
+            LocalDateTime expirationDateTime = LocalDateTime.ofInstant(file.getExpirationDate().toInstant(), ZoneOffset.UTC);
+            csvContent.append(count).append(",")
+                    .append(file.getName()).append(",")
+                    .append(file.getEffectiveDate() != null ? effectiveDateTime.format(dateFormatter) : "").append(",")
+                    .append(file.getExpirationDate() != null ? expirationDateTime.format(dateFormatter) : "").append(",")
+                    .append(status).append("\n");
+            count++;
+        }
+        return csvContent.toString();
+    }
 
     @PostMapping("/upload/{userId}")
     public ResponseEntity<ResponseMessage> uploadFile(
@@ -114,6 +140,34 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
+    @GetMapping("file/csv/{userId}")
+    public ResponseEntity<byte[]> generateCSV(@PathVariable int userId) {
+        List<ResponseFile> files = storageService.getUserFiles(userId).map(dbFile -> {
+            String fileDownloadUri = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path("/files/")
+                    .path(dbFile.getId())
+                    .toUriString();
+
+            return new ResponseFile(
+                    dbFile.getName(),
+                    fileDownloadUri,
+                    dbFile.getType(),
+                    dbFile.getData().length,
+                    dbFile.getEffectiveDate(),
+                    dbFile.getExpirationDate());
+        }).collect(Collectors.toList());
+
+        String csvContent = generateCSVContent(files);
+        byte[] csvBytes = csvContent.getBytes(StandardCharsets.UTF_8);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        headers.setContentLength(csvBytes.length);
+        headers.setContentDispositionFormData("attachment", "files.csv");
+
+        return ResponseEntity.ok().headers(headers).body(csvBytes);
+    }
     @GetMapping("/files/{id}")
     public ResponseEntity<byte[]> getFile(@PathVariable String id) {
         FileDB fileDB = storageService.getFile(id);
