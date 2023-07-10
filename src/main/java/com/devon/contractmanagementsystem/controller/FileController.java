@@ -2,9 +2,7 @@ package com.devon.contractmanagementsystem.controller;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Calendar;
@@ -61,12 +59,14 @@ public class FileController {
         int count = 1;
         for (ResponseFile file : files) {
             String status = file.getExpirationDate() != null && file.getExpirationDate().compareTo(new Date()) >= 0 ? "Active" : "Inactive";
-            LocalDateTime effectiveDateTime = LocalDateTime.ofInstant(file.getEffectiveDate().toInstant(), ZoneOffset.UTC);
-            LocalDateTime expirationDateTime = LocalDateTime.ofInstant(file.getExpirationDate().toInstant(), ZoneOffset.UTC);
+            LocalDateTime effectiveDateTime = LocalDateTime.ofInstant(file.getEffectiveDate().toInstant(), ZoneId.systemDefault());
+            LocalDateTime expirationDateTime = LocalDateTime.ofInstant(file.getExpirationDate().toInstant(),ZoneId.systemDefault());
+            ZonedDateTime effectiveZonedDateTime = effectiveDateTime.atZone(ZoneId.systemDefault());
+            ZonedDateTime expirationZonedDateTime = expirationDateTime.atZone(ZoneId.systemDefault());
             csvContent.append(count).append(",")
                     .append(file.getName()).append(",")
-                    .append(file.getEffectiveDate() != null ? effectiveDateTime.format(dateFormatter) : "").append(",")
-                    .append(file.getExpirationDate() != null ? expirationDateTime.format(dateFormatter) : "").append(",")
+                    .append(file.getEffectiveDate() != null ? effectiveZonedDateTime.format(dateFormatter) : "").append(",")
+                    .append(file.getExpirationDate() != null ? expirationZonedDateTime.format(dateFormatter) : "").append(",")
                     .append(status).append("\n");
             count++;
         }
