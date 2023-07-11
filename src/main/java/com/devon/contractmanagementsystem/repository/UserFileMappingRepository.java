@@ -16,6 +16,6 @@ public interface UserFileMappingRepository extends JpaRepository<UserFileMapping
     List<UserFileMapping> findByUserId(int userId);
 
     UserFileMapping findByContentId(String id);
-    
+
     UserFileMapping findByUserIdAndContentId(@Param("userId") int userId, @Param("contentId") String contentId);
 }
