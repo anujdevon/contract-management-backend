@@ -96,10 +96,8 @@ public class FileController {
                         storageService.saveFile(existingFile);
                         message = "File updated successfully: " + file.getOriginalFilename();
                     } else {
-                        FileDB fileDB = storageService.store(file, user.getId(), effectiveDate, expirationDate);
-                        UserFileMapping mapping = new UserFileMapping(user.getId(), fileDB.getId());
-                        userFileMappingRepository.save(mapping);
-                        message = "Uploaded the file successfully: ";
+                        message = "You don't have permission to update the file "+ file.getOriginalFilename();
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseMessage(message));
                     }
                 }else{
                         FileDB fileDB = storageService.store(file, user.getId(), effectiveDate, expirationDate);
