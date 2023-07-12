@@ -26,8 +26,6 @@ public class UserController {
 
     @PostMapping("/login")
     public User login(@RequestBody UserLoginRequest loginRequest) {
-        // Retrieve user from the database based on email and password
-        //return userService.login(user);
         return userService.login(loginRequest.getEmail(),loginRequest.getPassword());
     }
 
